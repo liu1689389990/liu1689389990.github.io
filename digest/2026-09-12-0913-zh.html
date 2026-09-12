@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="terminal" data-fx="full">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -22,22 +22,34 @@
 <link rel="alternate" type="application/rss+xml" title="加密货币每日资讯 RSS" href="https://liu1689389990.github.io/feed.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/style.css">
 </head>
+<body>
+<div class="fx-grid" aria-hidden="true"></div>
+<div class="fx-stars" aria-hidden="true"><i></i><i></i></div>
+<div class="fx-scan" aria-hidden="true"></div>
+<div class="fx-noise" aria-hidden="true"></div>
+<script type="application/json" id="mkt-data">{"fetched_at":1789224901,"fetched_at_str":"2026-09-12 22:55","source":"CoinGecko / alternative.me","stale":false,"coins":[{"id":"bitcoin","sym":"BTC","zh":"比特币","usd":77467,"chg24h":-1.72,"mcap":1555752266535.3948,"vol24h":22083748691.48732,"spark":[[1788652800000,79821.7],[1788739200000,80329.35],[1788825600000,79093.46],[1788912000000,78450.75],[1788998400000,78283.06],[1789084800000,76554.99],[1789171200000,77203.53],[1789224740000,77465.99]]},{"id":"ethereum","sym":"ETH","zh":"以太坊","usd":2540.33,"chg24h":-2.39,"mcap":309985988311.9698,"vol24h":13993151053.237549,"spark":[[1788652800000,2480.0],[1788739200000,2514.01],[1788825600000,2489.4],[1788912000000,2485.07],[1788998400000,2467.53],[1789084800000,2437.51],[1789171200000,2514.85],[1789224750000,2540.31]]},{"id":"solana","sym":"SOL","zh":"Solana","usd":102.01,"chg24h":-1.29,"mcap":59840504966.29572,"vol24h":2969180620.354167,"spark":[[1788652800000,103.17],[1788739200000,106.49],[1788825600000,103.77],[1788912000000,103.36],[1788998400000,101.57],[1789084800000,98.63],[1789171200000,102.39],[1789224750000,102.01]]},{"id":"ripple","sym":"XRP","zh":"XRP","usd":1.37,"chg24h":-1.81,"mcap":86128932657.84277,"vol24h":1637115505.6661944,"spark":[[1788652800000,1.41],[1788739200000,1.42],[1788825600000,1.4],[1788912000000,1.42],[1788998400000,1.39],[1789084800000,1.33],[1789171200000,1.36],[1789224740000,1.37]]}],"fear_greed":{"value":63,"label":"Greed","label_zh":"贪婪"},"global":{"total_market_cap_usd":2665761839589.323,"market_cap_change_24h":-4.6144736431909115,"total_volume_usd":70808326258.12924,"btc_dominance":58.20080805459743,"eth_dominance":11.598307576089427}}</script>
 <header class="masthead"><div class="mast-in">
-<a class="brand" href="/"><span class="dot"></span>加密货币每日资讯<small>Crypto Daily Digest</small></a>
+<a class="brand" href="/"><span class="mark">C</span><span class="bt"><b>加密货币每日资讯</b><span>Crypto Daily Digest</span></span></a>
 <nav class="mast-nav">
 <a href="/">头版</a>
+<a href="/#board">行情</a>
 <a href="/#latest">今日要闻</a>
 <a href="/#archive">往期</a>
 <a href="/#about">关于</a>
 <a href="/feed.xml">RSS</a>
 </nav>
-<div class="langsw">
-<a href="https://t.me/CryptoDailyZH" class="on">中</a><a href="https://t.me/CryptoWeb3NewsDaily">EN</a>
+<div class="themesw" role="group" aria-label="主题切换">
+<span class="lbl">主题</span>
+<button type="button" data-t="terminal" aria-pressed="true" title="暗黑终端"></button>
+<button type="button" data-t="dash" aria-pressed="false" title="数据面板"></button>
+<button type="button" data-t="dim" aria-pressed="false" title="三维赛博"></button>
+<button type="button" data-t="paper" aria-pressed="false" title="纸媒刊物"></button>
 </div>
 </div></header>
+<div class="ticker"><div class="tick-track"><span class="tick"><span class="s">BTC</span><span class="p" data-px="BTC">$77,467</span><span class="c d" data-chg="BTC">-1.72%</span><svg class="sp" viewBox="0 0 82 28" aria-hidden="true"><polyline points="0.0,5.6 11.7,2.5 23.4,10.0 35.1,13.9 46.9,15.0 58.6,25.5 70.3,21.5 82.0,19.9" fill="none" stroke="var(--down)" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></svg></span><span class="tick"><span class="s">ETH</span><span class="p" data-px="ETH">$2,540</span><span class="c d" data-chg="ETH">-2.39%</span><svg class="sp" viewBox="0 0 82 28" aria-hidden="true"><polyline points="0.0,16.0 11.7,8.4 23.4,13.9 35.1,14.9 46.9,18.8 58.6,25.5 70.3,8.2 82.0,2.5" fill="none" stroke="var(--up)" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></svg></span><span class="tick"><span class="s">SOL</span><span class="p" data-px="SOL">$102.01</span><span class="c d" data-chg="SOL">-1.29%</span><svg class="sp" viewBox="0 0 82 28" aria-hidden="true"><polyline points="0.0,12.2 11.7,2.5 23.4,10.5 35.1,11.7 46.9,16.9 58.6,25.5 70.3,14.5 82.0,15.6" fill="none" stroke="var(--down)" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></svg></span><span class="tick"><span class="s">XRP</span><span class="p" data-px="XRP">$1.37</span><span class="c d" data-chg="XRP">-1.81%</span><svg class="sp" viewBox="0 0 82 28" aria-hidden="true"><polyline points="0.0,5.1 11.7,2.5 23.4,7.6 35.1,2.5 46.9,10.2 58.6,25.5 70.3,17.8 82.0,15.3" fill="none" stroke="var(--down)" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></svg></span><span class="tick"><span class="s">总市值</span><span class="p">$2.67T</span><span class="c d">24h -4.61%</span></span><span class="tick"><span class="s">恐惧贪婪</span><span class="p">63</span><span class="c">贪婪</span></span><span class="tick"><span class="s">BTC</span><span class="p" data-px="BTC">$77,467</span><span class="c d" data-chg="BTC">-1.72%</span><svg class="sp" viewBox="0 0 82 28" aria-hidden="true"><polyline points="0.0,5.6 11.7,2.5 23.4,10.0 35.1,13.9 46.9,15.0 58.6,25.5 70.3,21.5 82.0,19.9" fill="none" stroke="var(--down)" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></svg></span><span class="tick"><span class="s">ETH</span><span class="p" data-px="ETH">$2,540</span><span class="c d" data-chg="ETH">-2.39%</span><svg class="sp" viewBox="0 0 82 28" aria-hidden="true"><polyline points="0.0,16.0 11.7,8.4 23.4,13.9 35.1,14.9 46.9,18.8 58.6,25.5 70.3,8.2 82.0,2.5" fill="none" stroke="var(--up)" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></svg></span><span class="tick"><span class="s">SOL</span><span class="p" data-px="SOL">$102.01</span><span class="c d" data-chg="SOL">-1.29%</span><svg class="sp" viewBox="0 0 82 28" aria-hidden="true"><polyline points="0.0,12.2 11.7,2.5 23.4,10.5 35.1,11.7 46.9,16.9 58.6,25.5 70.3,14.5 82.0,15.6" fill="none" stroke="var(--down)" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></svg></span><span class="tick"><span class="s">XRP</span><span class="p" data-px="XRP">$1.37</span><span class="c d" data-chg="XRP">-1.81%</span><svg class="sp" viewBox="0 0 82 28" aria-hidden="true"><polyline points="0.0,5.1 11.7,2.5 23.4,7.6 35.1,2.5 46.9,10.2 58.6,25.5 70.3,17.8 82.0,15.3" fill="none" stroke="var(--down)" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></svg></span><span class="tick"><span class="s">总市值</span><span class="p">$2.67T</span><span class="c d">24h -4.61%</span></span><span class="tick"><span class="s">恐惧贪婪</span><span class="p">63</span><span class="c">贪婪</span></span></div><div class="tick-live stale"><span class="dot"></span><span data-live>快照 09-12 22:55</span></div></div>
 <main>
 <div class="wrap art-top">
 <div class="byline"><span>2026年9月12日 周六</span><span>·</span><b>早间档 · 第 2 期</b><span>·</span><span>3 条要闻</span><span>·</span><span>cointelegraph.com decrypt.co</span></div>
@@ -77,7 +89,8 @@
 </div>
 <div class="foot-r">
 <a href="https://t.me/CryptoDailyZH">中文频道 @CryptoDailyZH</a> · <a href="https://t.me/CryptoWeb3NewsDaily">EN @CryptoWeb3NewsDaily</a> · <a href="/feed.xml">RSS</a> · <a href="/sitemap.xml">Sitemap</a>
-<div class="mono" style="margin-top:6px">更新 2026-09-12 22:07 CST</div>
+<div class="mono" style="margin-top:6px">更新 2026-09-12 22:55 CST</div>
 </div>
 </div></footer>
+<script src="/assets/site.js" defer></script>
 </body></html>
