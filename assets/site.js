@@ -8,10 +8,15 @@
   'use strict';
   var root = document.documentElement;
 
+  /* 页面语言：<html lang="en"> 即英文站，互动层文案跟随 */
+  var IS_EN = document.documentElement.lang === 'en';
+
   /* ── 1. 主题 ── */
   var FX = { terminal: 'full', dash: 'subtle', dim: 'full', paper: 'none' };
   var BG = { terminal: '#04070a', dash: '#080b12', dim: '#06040d', paper: '#faf8f3' };
-  var NAME = { terminal: '暗黑终端', dash: '数据面板', dim: '三维赛博', paper: '纸媒刊物' };
+  var NAME = IS_EN
+    ? { terminal: 'Dark Terminal', dash: 'Data Dash', dim: 'Cyber 3D', paper: 'Newsprint' }
+    : { terminal: '暗黑终端', dash: '数据面板', dim: '三维赛博', paper: '纸媒刊物' };
   var KEY = 'cdd-theme';
   root.classList.add('js');
 
@@ -81,7 +86,7 @@
       var lbl = box.querySelector('[data-live]');
       if (stale) {
         box.classList.add('stale');
-        if (lbl) lbl.textContent = '快照 ' + (mkt.fetched_at_str || '').slice(5);
+        if (lbl) lbl.textContent = (IS_EN ? 'Snapshot ' : '快照 ') + (mkt.fetched_at_str || '').slice(5);
       } else {
         box.classList.remove('stale');
         if (lbl) lbl.textContent = 'LIVE';
@@ -124,27 +129,25 @@
     setInterval(refresh, 90000);
   })();
 
-  /* ─── 5. 语言筛选：全部/中文/EN（过滤今日要闻+往期存档卡片，localStorage 记忆）─── */
-  (function langFilter() {
-    var box = document.querySelector('.langsw');
-    if (!box) return;
+  /* ─── 5. 语言记忆：.langsw 是真实链接（中文 / ↔ 英文 /en/），这里只做记忆。
+     首次进站若记忆语言与当前页不符且停在首页，则自动跳到对应语言首页。 ─── */
+  (function langMemory() {
     var KEY = 'cdd-lang';
-    function apply(l) {
-      document.querySelectorAll('article.art[data-lang]').forEach(function (a) {
-        a.classList.toggle('lang-hidden', l !== 'all' && a.dataset.lang !== l);
-      });
-      box.querySelectorAll('button').forEach(function (b) {
-        b.setAttribute('aria-pressed', String(b.dataset.lang === l));
+    var box = document.querySelector('.langsw');
+    if (box) {
+      box.addEventListener('click', function (ev) {
+        var a = ev.target.closest('a');
+        if (!a) return;
+        localStorage.setItem(KEY, a.getAttribute('hreflang') === 'en' ? 'en' : 'zh');
       });
     }
+    var pageLang = document.documentElement.lang === 'en' ? 'en' : 'zh';
     var saved = localStorage.getItem(KEY);
-    if (saved === 'zh' || saved === 'en') apply(saved);
-    box.addEventListener('click', function (ev) {
-      var b = ev.target.closest('button');
-      if (!b) return;
-      localStorage.setItem(KEY, b.dataset.lang);
-      apply(b.dataset.lang);
-    });
+    var isHome = location.pathname === '/' || location.pathname === '/en/' ||
+                 location.pathname === '/index.html' || location.pathname === '/en/index.html';
+    if (saved && saved !== pageLang && isHome) {
+      location.replace(saved === 'en' ? '/en/' : '/');
+    }
   })();
 
   /* ─── 6. 互动层 ─── */
@@ -235,23 +238,26 @@
     var fab = document.createElement('div');
     fab.className = 'fab';
     fab.innerHTML =
-      '<div class="fab-head"><span class="fab-grip">⠿</span><span class="fab-title">🎮 互动中心</span><button class="fab-x" title="收起">✕</button></div>' +
+      '<div class="fab-head"><span class="fab-grip">⠿</span><span class="fab-title">' + (IS_EN ? '🎮 Play Zone' : '🎮 互动中心') + '</span><button class="fab-x" title="' + (IS_EN ? 'Collapse' : '收起') + '">✕</button></div>' +
       '<div class="fab-body">' +
         '<div class="fg">' +
-          '<div class="fg-label">猜涨跌 · BTC 未来 60 秒</div>' +
-          '<div class="fg-q" id="fg-q">现在 $--，60 秒后更高还是更低？</div>' +
-          '<div class="fg-btns"><button class="fg-up" id="fg-up">▲ 涨</button><button class="fg-dn" id="fg-dn">▼ 跌</button></div>' +
+          '<div class="fg-label">' + (IS_EN ? 'Up or Down · BTC in 60s' : '猜涨跌 · BTC 未来 60 秒') + '</div>' +
+          '<div class="fg-q" id="fg-q">' + (IS_EN ? 'Now $-- — higher or lower in 60 seconds?' : '现在 $--，60 秒后更高还是更低？') + '</div>' +
+          '<div class="fg-btns"><button class="fg-up" id="fg-up">' + (IS_EN ? '▲ Up' : '▲ 涨') + '</button><button class="fg-dn" id="fg-dn">' + (IS_EN ? '▼ Down' : '▼ 跌') + '</button></div>' +
           '<div class="fg-out" id="fg-out"></div>' +
         '</div>' +
-        '<a class="fab-tg" href="' + tgCn + '" target="_blank" rel="noopener"><span class="tg-badge">📢</span><span class="tg-txt"><b>中文频道 · 每日三档</b><small>@CryptoDailyZH</small></span></a>' +
-        '<a class="fab-tg" href="' + tgEn + '" target="_blank" rel="noopener"><span class="tg-badge">🌐</span><span class="tg-txt"><b>English Channel</b><small>@CryptoWeb3NewsDaily</small></span></a>' +
-        '<div class="fab-acts"><button id="fab-rain">🪙 币雨</button><button id="fab-top">⬆ 回顶部</button></div>' +
+        (IS_EN
+          ? '<a class="fab-tg" href="' + tgEn + '" target="_blank" rel="noopener"><span class="tg-badge">🌐</span><span class="tg-txt"><b>English Channel</b><small>@CryptoWeb3NewsDaily</small></span></a>' +
+            '<a class="fab-tg" href="' + tgCn + '" target="_blank" rel="noopener"><span class="tg-badge">📢</span><span class="tg-txt"><b>中文频道 · 每日三档</b><small>@CryptoDailyZH</small></span></a>'
+          : '<a class="fab-tg" href="' + tgCn + '" target="_blank" rel="noopener"><span class="tg-badge">📢</span><span class="tg-txt"><b>中文频道 · 每日三档</b><small>@CryptoDailyZH</small></span></a>' +
+            '<a class="fab-tg" href="' + tgEn + '" target="_blank" rel="noopener"><span class="tg-badge">🌐</span><span class="tg-txt"><b>English Channel</b><small>@CryptoWeb3NewsDaily</small></span></a>') +
+        '<div class="fab-acts"><button id="fab-rain">' + (IS_EN ? '🪙 Coin Rain' : '🪙 币雨') + '</button><button id="fab-top">' + (IS_EN ? '⬆ Top' : '⬆ 回顶部') + '</button></div>' +
       '</div>';
     document.body.appendChild(fab);
 
     var dot = document.createElement('div');
     dot.className = 'fab-dot';
-    dot.title = '展开互动中心（可拖动）';
+    dot.title = IS_EN ? 'Open Play Zone (draggable)' : '展开互动中心（可拖动）';
     dot.textContent = '🎮';
     dot.hidden = true;
     document.body.appendChild(dot);
@@ -304,8 +310,8 @@
       var n = stats.win + stats.lose;
       fgOut.className = 'fg-out';
       fgOut.textContent = n
-        ? ('战绩 ' + stats.win + ' 胜 ' + stats.lose + ' 负（胜率 ' + Math.round(stats.win * 100 / n) + '%）')
-        : '答案用 60 秒后的真实币价判定，绝无作弊';
+        ? (IS_EN ? 'Record: ' + stats.win + 'W ' + stats.lose + 'L (' + Math.round(stats.win * 100 / n) + '% win rate)' : ('战绩 ' + stats.win + ' 胜 ' + stats.lose + ' 负（胜率 ' + Math.round(stats.win * 100 / n) + '%）'))
+        : (IS_EN ? 'Settled by the real BTC price 60s later — no cheating' : '答案用 60 秒后的真实币价判定，绝无作弊');
     }
     showStats();
 
@@ -324,15 +330,15 @@
     function pick(dir) {
       if (fgState.pick) return;
       var base = currentBtc();
-      if (!base) { fgOut.textContent = '拿不到基线价，稍后再试'; return }
+      if (!base) { fgOut.textContent = IS_EN ? 'No baseline price — try again shortly' : '拿不到基线价，稍后再试'; return }
       fgState.pick = dir; fgState.base = base; fgState.t0 = Date.now();
       lockBtns(true);
-      fgQ.textContent = '已押【' + (dir > 0 ? '涨 ▲' : '跌 ▼') + '】基线 $' + base.toLocaleString('en-US') + '，倒计时 60s…';
+      fgQ.textContent = IS_EN ? 'Bet: ' + (dir > 0 ? 'UP ▲' : 'DOWN ▼') + ' · baseline $' + base.toLocaleString('en-US') + ' · 60s left…' : '已押【' + (dir > 0 ? '涨 ▲' : '跌 ▼') + '】基线 $' + base.toLocaleString('en-US') + '，倒计时 60s…';
       fgOut.textContent = '';
       fgState.timer = setInterval(function () {
         var left = 60 - Math.round((Date.now() - fgState.t0) / 1000);
         if (left > 0) {
-          fgQ.textContent = '已押【' + (dir > 0 ? '涨 ▲' : '跌 ▼') + '】基线 $' + base.toLocaleString('en-US') + '，倒计时 ' + left + 's…';
+          fgQ.textContent = IS_EN ? 'Bet: ' + (dir > 0 ? 'UP ▲' : 'DOWN ▼') + ' · baseline $' + base.toLocaleString('en-US') + ' · ' + left + 's left…' : '已押【' + (dir > 0 ? '涨 ▲' : '跌 ▼') + '】基线 $' + base.toLocaleString('en-US') + '，倒计时 ' + left + 's…';
         } else {
           clearInterval(fgState.timer);
           settle();
@@ -342,7 +348,7 @@
 
     function judge(px) {
       if (!px) {
-        fgQ.textContent = '结算失败：拿不到当前价，稍后再押';
+        fgQ.textContent = IS_EN ? 'Settlement failed: no live price — bet again later' : '结算失败：拿不到当前价，稍后再押';
         lockBtns(false); fgState.pick = null;
         return;
       }
@@ -352,16 +358,16 @@
       else { stats.lose++; fgOut.className = 'fg-out lose'; }
       saveLS(LS_FG, stats);
       var pct = (px - fgState.base) / fgState.base * 100;
-      fgQ.textContent = (win ? '🎉 猜对了！' : '💀 猜错了…') +
-        ' BTC ' + (up ? '涨' : '跌') + '至 $' + px.toLocaleString('en-US') +
+      fgQ.textContent = (win ? (IS_EN ? '🎉 You got it!' : '🎉 猜对了！') : (IS_EN ? '💀 Wrong…' : '💀 猜错了…')) +
+        ' BTC ' + (IS_EN ? (up ? 'rose' : 'fell') : (up ? '涨' : '跌')) + (IS_EN ? ' to $' : '至 $') + px.toLocaleString('en-US') +
         '（' + (pct >= 0 ? '+' : '') + pct.toFixed(3) + '%）';
       var n = stats.win + stats.lose;
-      fgOut.textContent = '战绩 ' + stats.win + ' 胜 ' + stats.lose + ' 负（胜率 ' + Math.round(stats.win * 100 / n) + '%）';
+      fgOut.textContent = IS_EN ? 'Record: ' + stats.win + 'W ' + stats.lose + 'L (' + Math.round(stats.win * 100 / n) + '% win rate)' : '战绩 ' + stats.win + ' 胜 ' + stats.lose + ' 负（胜率 ' + Math.round(stats.win * 100 / n) + '%）';
       if (win) coinRain(26);
       setTimeout(function () {
         fgState.pick = null; lockBtns(false);
         var cur = currentBtc();
-        fgQ.textContent = cur ? ('现在 $' + cur.toLocaleString('en-US') + '，60 秒后更高还是更低？') : '再押一轮：60 秒后 BTC 更高还是更低？';
+        fgQ.textContent = cur ? (IS_EN ? 'Now $' + cur.toLocaleString('en-US') + ' — higher or lower in 60 seconds?' : '现在 $' + cur.toLocaleString('en-US') + '，60 秒后更高还是更低？') : (IS_EN ? 'Another round: higher or lower in 60 seconds?' : '再押一轮：60 秒后 BTC 更高还是更低？');
         showStats();
       }, 5000);
     }
@@ -395,7 +401,7 @@
     stage.appendChild(orbit);
     var hint = document.createElement('div');
     hint.className = 'cube-hint';
-    hint.textContent = 'drag me · 拖我';
+    hint.textContent = IS_EN ? 'drag me' : 'drag me · 拖我';
     stage.appendChild(hint);
 
     var ox = 14, oy = -18, pid = null, lx = 0, ly = 0;
