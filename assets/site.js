@@ -12,7 +12,7 @@
   var FX = { terminal: 'full', dash: 'subtle', dim: 'full', paper: 'none' };
   var BG = { terminal: '#04070a', dash: '#080b12', dim: '#06040d', paper: '#faf8f3' };
   var NAME = { terminal: '暗黑终端', dash: '数据面板', dim: '三维赛博', paper: '纸媒刊物' };
-  var KEY = '***';
+  var KEY = 'cdd-theme';
   root.classList.add('js');
 
   function setTheme(t, save) {
@@ -124,7 +124,30 @@
     setInterval(refresh, 90000);
   })();
 
-  /* ── 4. 互动层 ── */
+  /* ─── 5. 语言筛选：全部/中文/EN（过滤今日要闻+往期存档卡片，localStorage 记忆）─── */
+  (function langFilter() {
+    var box = document.querySelector('.langsw');
+    if (!box) return;
+    var KEY = 'cdd-lang';
+    function apply(l) {
+      document.querySelectorAll('article.art[data-lang]').forEach(function (a) {
+        a.classList.toggle('lang-hidden', l !== 'all' && a.dataset.lang !== l);
+      });
+      box.querySelectorAll('button').forEach(function (b) {
+        b.setAttribute('aria-pressed', String(b.dataset.lang === l));
+      });
+    }
+    var saved = localStorage.getItem(KEY);
+    if (saved === 'zh' || saved === 'en') apply(saved);
+    box.addEventListener('click', function (ev) {
+      var b = ev.target.closest('button');
+      if (!b) return;
+      localStorage.setItem(KEY, b.dataset.lang);
+      apply(b.dataset.lang);
+    });
+  })();
+
+  /* ─── 6. 互动层 ─── */
   var LS_FAB = 'fabpos', LS_FG = 'fgstats';
 
   function loadLS(k, d) { try { return JSON.parse(localStorage.getItem(k)) || d } catch (e) { return d } }

@@ -229,6 +229,26 @@ main,.masthead,.foot,.cta{position:relative;z-index:2}
   font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;color:var(--ink-4);
   text-transform:uppercase;align-self:center;margin-right:2px;
 }
+/* 语言筛选：全部/中文/EN（过滤今日要闻+往期存档卡片） */
+.langsw{display:flex;gap:4px;margin-left:8px;padding-left:12px;border-left:1px solid var(--line)}
+.langsw button{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;cursor:pointer;
+  padding:3px 9px;border-radius:99px;border:1px solid var(--line-2);
+  background:transparent;color:var(--ink-3);transition:color .16s,border-color .16s,background .16s;
+}
+.langsw button:hover{color:var(--ink);border-color:var(--accent)}
+.langsw button[aria-pressed="true"]{
+  color:var(--accent);border-color:var(--accent);
+  background:var(--accent-soft);box-shadow:0 0 9px var(--glow);
+}
+.lang-hidden{display:none!important}
+/* 文章页 byline 里的中英对照链接 */
+.langlink{
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;margin-left:6px;
+  color:var(--accent);border:1px solid var(--line-2);border-radius:99px;padding:1.5px 9px;
+  white-space:nowrap;transition:border-color .16s,background .16s;
+}
+.langlink:hover{border-color:var(--accent);background:var(--accent-soft)}
 
 /* ────────── 5. 行情 ticker ────────── */
 .ticker{
@@ -603,6 +623,8 @@ main,.masthead,.foot,.cta{position:relative;z-index:2}
   .mast-nav a{padding:6px 9px;font-size:10.5px;flex:none}
   .themesw{margin-left:auto;padding-left:9px}
   .themesw .lbl{display:none}
+  .langsw{margin-left:0;padding-left:0;border-left:none}
+  .langsw button{font-size:10px;padding:2px 8px}
   .board-2{grid-template-columns:1fr}
   .coins{grid-template-columns:1fr 1fr}
   .coin .px{font-size:19px}
@@ -632,7 +654,7 @@ main,.masthead,.foot,.cta{position:relative;z-index:2}
 }
 :focus-visible{outline:2px solid var(--accent);outline-offset:2.5px;border-radius:var(--radius)}
 @media print{
-  .masthead,.ticker,.board,.fx-grid,.fx-stars,.fx-scan,.fx-noise,.rail,.cta,.pager,.themesw,.fab,.fab-dot,.coin-rain{display:none!important}
+  .masthead,.ticker,.board,.fx-grid,.fx-stars,.fx-scan,.fx-noise,.rail,.cta,.pager,.themesw,.langsw,.fab,.fab-dot,.coin-rain{display:none!important}
   body{background:#fff;color:#000;font-size:11.5pt}
   .prose{max-width:none}
   .story{break-inside:avoid}
