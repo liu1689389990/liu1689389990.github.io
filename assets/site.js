@@ -162,7 +162,7 @@
             livePrices[c.sym] = c.usd;
             got++;
           });
-          if (got) { paint(); setLive(false); }
+          if (got) { paint(); setLive(false); updateFab(); }
         })
         .catch(function () { setLive(true); });
     }
@@ -283,7 +283,7 @@
       '<div class="fab-body">' +
         '<div class="fg">' +
           '<div class="fg-label">' + (IS_EN ? 'Up or Down · BTC in 60s' : '猜涨跌 · BTC 未来 60 秒') + '</div>' +
-          '<div class="fg-q" id="fg-q">' + (IS_EN ? 'Now $-- — higher or lower in 60 seconds?' : '现在 $--，60 秒后更高还是更低？') + '</div>' +
+          '<div class="fg-q" id="fg-q">' + (IS_EN ? 'Waiting for price…' : '等价格中…') + '</div>' +
           '<div class="fg-btns"><button class="fg-up" id="fg-up">' + (IS_EN ? '▲ Up' : '▲ 涨') + '</button><button class="fg-dn" id="fg-dn">' + (IS_EN ? '▼ Down' : '▼ 跌') + '</button></div>' +
           '<div class="fg-out" id="fg-out"></div>' +
         '</div>' +
@@ -394,6 +394,42 @@
         if (!isNaN(v) && v > 0) return v;
       }
       return null;
+    }
+
+    /* 浮动窗内容实时更新（行情回来后调用） */
+    function updateFab() {
+      var cur = currentBtc();
+      /* 猜涨跌提示语 */
+      if (fgQ) {
+        if (cur) {
+          fgQ.textContent = IS_EN
+            ? 'Now $' + cur.toLocaleString('en-US') + ' — higher or lower in 60 seconds?'
+            : '现在 $' + cur.toLocaleString('en-US') + '，60 秒后更高还是更低？';
+        } else {
+          fgQ.textContent = IS_EN ? 'Waiting for price…' : '等价格中…';
+        }
+      }
+      /* 转换器 */
+      if (fcRes && !fcAmt.value) {
+        fcRes.textContent = livePrices[fcFrom.value] && livePrices[fcTo.value] ? '—' : '等数据中…';
+      }
+      /* 持仓模拟器 */
+      if (fpRes) {
+        var amt = parseFloat(fpAmt.value);
+        if (!amt || amt <= 0 || !livePrices.BTC) {
+          fpRes.textContent = '';
+        } else {
+          var btc = amt / livePrices.BTC;
+          var eth = btc * livePrices.ETH;
+          var sol = btc * livePrices.SOL;
+          fpRes.innerHTML =
+            '<div style="font-size:10.5px;color:var(--ink-3);margin-top:5px">' +
+              'BTC: $' + amt.toLocaleString('en-US') +
+              ' → ETH ' + eth.toFixed(4) +
+              ' · SOL ' + sol.toFixed(1) +
+            '</div>';
+        }
+      }
     }
 
     function pick(dir) {
