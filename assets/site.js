@@ -94,6 +94,8 @@
     }
     function paint() {
       mkt.coins.forEach(function (c) {
+        var oldPx = document.querySelector('[data-px="' + c.sym + '"]');
+        var oldChgs = document.querySelectorAll('[data-chg="' + c.sym + '"]');
         setText('[data-px="' + c.sym + '"]', fmtUsd(c.usd));
         var chgs = document.querySelectorAll('[data-chg="' + c.sym + '"]');
         for (var i = 0; i < chgs.length; i++) {
@@ -101,9 +103,48 @@
           chgs[i].classList.remove('u', 'd');
           chgs[i].classList.add(c.chg24h >= 0 ? 'u' : 'd');
         }
+        /* 价格变动闪光 */
+        if (oldPx && oldPx.textContent !== fmtUsd(c.usd)) {
+          oldPx.classList.remove('flash');
+          void oldPx.offsetWidth; /* force reflow */
+          oldPx.classList.add('flash');
+        }
+        for (var j = 0; j < chgs.length; j++) {
+          chgs[j].classList.remove('bump');
+          void chgs[j].offsetWidth;
+          chgs[j].classList.add('bump');
+        }
       });
     }
     setLive(true); /* 初始按快照显示，实时拉到了再转 LIVE */
+
+    /* 恐惧贪婪仪表盘指针动画 */
+    (function animGauge() {
+      var needle = document.querySelector('.gauge line');
+      if (!needle) return;
+      var cx = 100, cy = 92, R = 55;
+      function needlePos(v) {
+        var rad = Math.PI * (1 - v / 100);
+        return { x: (cx + R * Math.cos(rad)).toFixed(1), y: (cy - R * Math.sin(rad)).toFixed(1) };
+      }
+      var cur = parseInt(needle.getAttribute('x2'));
+      if (!isNaN(cur)) {
+        var pos = needlePos(cur);
+        needle.setAttribute('x2', pos.x);
+        needle.setAttribute('y2', pos.y);
+      }
+      needle.style.transition = 'x2 .6s ease, y2 .6s ease';
+      var lastV = cur;
+      new MutationObserver(function () {
+        var val = parseInt(document.querySelector('.gauge .val').textContent);
+        if (!isNaN(val) && val !== lastV) {
+          lastV = val;
+          var p = needlePos(val);
+          needle.setAttribute('x2', p.x);
+          needle.setAttribute('y2', p.y);
+        }
+      }).observe(document.querySelector('.gauge .val'), { childList: true, characterData: true, subtree: true });
+    })();
 
     var ids = mkt.coins.map(function (c) { return c.id; }).join(',');
     var URL = CG_PRICE + ids + '&vs_currencies=usd&include_24hr_change=true';
@@ -252,6 +293,34 @@
           : '<a class="fab-tg" href="' + tgCn + '" target="_blank" rel="noopener"><span class="tg-badge">📢</span><span class="tg-txt"><b>中文频道 · 每日三档</b><small>@CryptoDailyZH</small></span></a>' +
             '<a class="fab-tg" href="' + tgEn + '" target="_blank" rel="noopener"><span class="tg-badge">🌐</span><span class="tg-txt"><b>English Channel</b><small>@CryptoWeb3NewsDaily</small></span></a>') +
         '<div class="fab-acts"><button id="fab-rain">' + (IS_EN ? '🪙 Coin Rain' : '🪙 币雨') + '</button><button id="fab-top">' + (IS_EN ? '⬆ Top' : '⬆ 回顶部') + '</button></div>' +
+        /* 迷你转换器 */
+        '<div class="fab-conv">' +
+          '<div class="fab-conv-h">' + (IS_EN ? '⚡ Converter' : '⚡ 转换器') + '</div>' +
+          '<div class="fab-conv-row">' +
+            '<select class="fab-conv-from" id="fc-from">' +
+              '<option value="BTC">BTC</option><option value="ETH">ETH</option>' +
+              '<option value="SOL">SOL</option><option value="XRP">XRP</option>' +
+            '</select>' +
+            '<input class="fab-conv-in" id="fc-amt" type="number" value="1" min="0" step="any">' +
+          '</div>' +
+          '<div class="fab-conv-row">' +
+            '<select class="fab-conv-to" id="fc-to">' +
+              '<option value="ETH">ETH</option><option value="BTC">BTC</option>' +
+              '<option value="SOL">SOL</option><option value="XRP">XRP</option>' +
+            '</select>' +
+            '<span class="fab-conv-res" id="fc-res">—</span>' +
+          '</div>' +
+        '</div>' +
+        /* 持仓模拟器 */
+        '<div class="fab-port">' +
+          '<div class="fab-conv-h">' + (IS_EN ? '📊 Portfolio' : '📊 持仓') + '</div>' +
+          '<div class="fab-conv-row">' +
+            '<span style="font-size:10.5px;color:var(--ink-3)">' + (IS_EN ? 'Hold' : '持有') + '</span>' +
+            '<input class="fab-conv-in" id="fp-amt" type="number" value="1000" min="0" step="any" style="width:72px">' +
+            '<span style="font-size:10.5px;color:var(--ink-3)">$</span>' +
+          '</div>' +
+          '<div class="fab-port-res" id="fp-res"></div>' +
+        '</div>' +
       '</div>';
     document.body.appendChild(fab);
 
@@ -388,6 +457,41 @@
 
     fgUp.addEventListener('click', function () { pick(1); this.blur() });
     fgDn.addEventListener('click', function () { pick(-1); this.blur() });
+
+    /* ── 迷你币币转换器 ── */
+    var fcFrom = fab.querySelector('#fc-from');
+    var fcTo = fab.querySelector('#fc-to');
+    var fcAmt = fab.querySelector('#fc-amt');
+    var fcRes = fab.querySelector('#fc-res');
+    function updateConv() {
+      var from = fcFrom.value, to = fcTo.value, amt = parseFloat(fcAmt.value);
+      if (!amt || amt <= 0 || !livePrices[from] || !livePrices[to]) {
+        fcRes.textContent = '—'; return;
+      }
+      var val = amt * livePrices[from] / livePrices[to];
+      fcRes.textContent = val.toFixed(val < 0.01 ? 6 : val < 1 ? 4 : 2) + ' ' + to;
+    }
+    fcFrom.addEventListener('change', updateConv);
+    fcTo.addEventListener('change', updateConv);
+    fcAmt.addEventListener('input', updateConv);
+
+    /* ── 持仓模拟器 ── */
+    var fpAmt = fab.querySelector('#fp-amt');
+    var fpRes = fab.querySelector('#fp-res');
+    function updatePort() {
+      var amt = parseFloat(fpAmt.value);
+      if (!amt || amt <= 0 || !livePrices.BTC) { fpRes.textContent = ''; return; }
+      var btc = amt / livePrices.BTC;
+      var eth = btc * livePrices.ETH;
+      var sol = btc * livePrices.SOL;
+      fpRes.innerHTML =
+        '<div style="font-size:10.5px;color:var(--ink-3);margin-top:5px">' +
+          (IS_EN ? 'BTC' : 'BTC') + ': $' + amt.toLocaleString('en-US') +
+          ' → ' + (IS_EN ? 'ETH' : 'ETH') + ' ' + eth.toFixed(4) +
+          ' · ' + (IS_EN ? 'SOL' : 'SOL') + ' ' + sol.toFixed(1) +
+        '</div>';
+    }
+    fpAmt.addEventListener('input', updatePort);
   }
 
   /* 3D 立方体：拖拽旋转（轨道层包在自动旋转的 .cube 外面，两种旋转叠加） */

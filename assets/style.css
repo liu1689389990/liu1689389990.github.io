@@ -309,6 +309,17 @@ main,.masthead,.foot,.cta{position:relative;z-index:2}
 .coin .px{
   font-family:var(--mono);font-size:clamp(21px,2.5vw,27px);font-weight:500;letter-spacing:-.02em;
   line-height:1.15;font-variant-numeric:tabular-nums;color:var(--ink);
+  transition:color .3s;
+}
+.coin .px.flash{animation:pxflash .5s ease-out}
+@keyframes pxflash{
+  0%{text-shadow:0 0 8px var(--accent);transform:scale(1.06)}
+  100%{text-shadow:none;transform:scale(1)}
+}
+.coin .chg.bump{animation:bump .4s ease-out}
+@keyframes bump{
+  0%{transform:translateY(-2px);filter:brightness(1.6)}
+  100%{transform:translateY(0);filter:brightness(1)}
 }
 .coin .row{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:7px}
 .coin .chg{font-family:var(--mono);font-size:12.5px;font-weight:500;font-variant-numeric:tabular-nums}
@@ -841,3 +852,14 @@ main,.masthead,.foot,.cta{position:relative;z-index:2}
 @media (max-width:400px){
   .cp-stats{grid-template-columns:1fr}
 }
+
+/* ═══════════════ 浮窗扩展：转换器 + 持仓 ═══════════════ */
+.fab-conv{border-top:1px solid var(--line);padding:9px 11px;margin-top:3px}
+.fab-conv-h{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.fab-conv-row{display:flex;align-items:center;gap:5px;margin-bottom:5px}
+.fab-conv-from,.fab-conv-to{font-family:var(--mono);font-size:10.5px;background:var(--bg-3);color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:4px 6px;outline:none}
+.fab-conv-from:focus,.fab-conv-to:focus{border-color:var(--accent)}
+.fab-conv-in{font-family:var(--mono);font-size:10.5px;background:var(--bg-3);color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:4px 6px;width:60px;outline:none}
+.fab-conv-in:focus{border-color:var(--accent)}
+.fab-conv-res{font-family:var(--mono);font-size:11.5px;font-weight:500;color:var(--accent-2);flex:1;text-align:right}
+.fab-port-res{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);line-height:1.6;margin-top:3px}
