@@ -6,7 +6,14 @@
   <description>每日三档更新的币圈新闻编辑站：币价复盘、宏观与降息预期、DeFi 与监管动态，每条附信源。</description>
   <language>zh-cn</language>
   <atom:link href="https://liu1689389990.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-  <lastBuildDate>Sat, 19 Sep 2026 05:56:24 GMT</lastBuildDate>
+  <lastBuildDate>Sat, 19 Sep 2026 12:26:32 GMT</lastBuildDate>
+  <item>
+    <title>Sep 19, 2026 Crypto Close · Bitcoin trades around $81,000 as the CFTC takes its own pa｜BTC price, Fed rate, blockchain news</title>
+    <link>https://liu1689389990.github.io/digest/2026-09-19-1408-en.html</link>
+    <guid isPermaLink="true">https://liu1689389990.github.io/digest/2026-09-19-1408-en.html</guid>
+    <pubDate>Sat, 19 Sep 2026 06:08:50 GMT</pubDate>
+    <description>Sep 19, 2026｜3 crypto stories: Bitcoin trades around $81,000 as the CFTC takes its own path on crypto rules, Coinbase files for single-stock ，信源：decrypt.co、co</description>
+  </item>
   <item>
     <title>Sep 18, 2026 Crypto Close · Bitcoin trades above $77,000 as the Bank of Japan hikes ra｜BTC price, Fed rate, blockchain news</title>
     <link>https://liu1689389990.github.io/digest/2026-09-18-1654-en.html</link>
@@ -139,13 +146,6 @@
     <guid isPermaLink="true">https://liu1689389990.github.io/digest/2026-09-12-1341-en.html</guid>
     <pubDate>Sat, 12 Sep 2026 05:41:43 GMT</pubDate>
     <description>Sep 12, 2026｜3 crypto stories: Bitcoin price today, Sept. 12: BTC holds around $77,000 and ether trades near $2,510 as Asian hours set the to，信源：decrypt.co、co</description>
-  </item>
-  <item>
-    <title>2026年9月12日加密货币复盘 · 加密货币今日开盘速览：比特币冲上7.9万美元后回落，美联储9月16日加息概率升到85%｜币价·降息·区块链每日解读</title>
-    <link>https://liu1689389990.github.io/digest/2026-09-12-0913-zh.html</link>
-    <guid isPermaLink="true">https://liu1689389990.github.io/digest/2026-09-12-0913-zh.html</guid>
-    <pubDate>Sat, 12 Sep 2026 01:13:00 GMT</pubDate>
-    <description>2026年9月12日 周六｜今日3条币圈要闻：加密货币今日开盘速览：比特币冲上7.9万美元后回落，美联储9月16日加息概率升到85%；欧盟点名预测市场内幕交易；狗狗币ETF上市不满一年清盘。，信源：cointelegraph.com、decrypt.co</description>
   </item>
 </channel>
 </rss>
