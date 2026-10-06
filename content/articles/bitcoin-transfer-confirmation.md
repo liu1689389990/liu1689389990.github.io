@@ -43,3 +43,8 @@ Sources:
 [2] https://developers.google.com/search/docs/appearance/title-link — Google: Search title link guidance
 [3] https://bitcoin.org/en/you-need-to-know — Bitcoin.org: Key risks and user responsibilities
 [4] https://bitcoin.org/en/faq — Bitcoin.org: FAQ and protocol basics
+[5] https://bitcoin.org/zh_CN/you-need-to-know — Bitcoin.org 简体中文：你需要了解的一些事
+[6] https://bitcoin.org/zh_CN/faq — Bitcoin.org 简体中文：常见问题
+
+## Editorial note
+This article follows the previously discussed SEO direction: answer a specific user problem with a sourced, practical guide; keep RSS digests separate from original evergreen content; publish independently written Chinese and English pages. It does not promise ranking or traffic.
