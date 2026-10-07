@@ -9,6 +9,7 @@ See [`AUTOPILOT.md`](AUTOPILOT.md) for scope and publishing gates. The weekly ed
 Run the static-site checks before publishing:
 
 ```bash
+python -m pip install -r requirements-validation.txt
 python -m unittest discover -s tests -v
 python scripts/seo_pipeline.py
 ```
