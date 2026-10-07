@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Practical Crypto Guides (English)</title>
+    <link>https://liu1689389990.github.io/en/</link>
+    <description>Independently written, sourced guides to crypto usage and security.</description>
+    <language>en</language>
+    <atom:link href="https://liu1689389990.github.io/feed-en.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Verify a Bitcoin Address Before Sending BTC</title>
+      <link>https://liu1689389990.github.io/en/guides/verify-bitcoin-address-before-sending/</link>
+      <guid isPermaLink="true">https://liu1689389990.github.io/en/guides/verify-bitcoin-address-before-sending/</guid>
+      <pubDate>Wed, 07 Oct 2026 08:18:38 GMT</pubDate>
+      <description>A practical pre-send checklist for Bitcoin network selection, full-address verification, clipboard substitution, and lookalike address risks.</description>
+    </item>
+    <item>
+      <title>How Long Does a Bitcoin Transfer Take? Confirmations &amp; Fees</title>
+      <link>https://liu1689389990.github.io/en/guides/bitcoin-transfer-confirmation/</link>
+      <guid isPermaLink="true">https://liu1689389990.github.io/en/guides/bitcoin-transfer-confirmation/</guid>
+      <pubDate>Tue, 06 Oct 2026 00:00:00 GMT</pubDate>
+      <description>Understand Bitcoin confirmations, fees, wallet status, and exchange crediting, then learn how to check a transaction safely.</description>
+    </item>
+  </channel>
+</rss>

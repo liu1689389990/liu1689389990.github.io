@@ -8,6 +8,8 @@ from scripts.seo_pipeline import validate_site
 class ValidateSiteTests(unittest.TestCase):
     def make_site(self, root: Path):
         (root / "en").mkdir()
+        (root / "guides" / "test").mkdir(parents=True)
+        (root / "en" / "guides" / "test").mkdir(parents=True)
         (root / "index.html").write_text(
             '<html><head><title>Home ZH</title>'
             '<meta name="description" content="Chinese home">'
@@ -18,6 +20,16 @@ class ValidateSiteTests(unittest.TestCase):
             '<meta name="description" content="English home">'
             '<link rel="canonical" href="https://example.test/en/">'
             '</head><body>Home</body></html>', encoding="utf-8")
+        (root / "guides" / "test" / "index.html").write_text(
+            '<html><head><title>Guide ZH</title>'
+            '<meta name="description" content="Chinese guide">'
+            '<link rel="canonical" href="https://example.test/guides/test/">'
+            '</head><body>指南</body></html>', encoding="utf-8")
+        (root / "en" / "guides" / "test" / "index.html").write_text(
+            '<html><head><title>Guide EN</title>'
+            '<meta name="description" content="English guide">'
+            '<link rel="canonical" href="https://example.test/en/guides/test/">'
+            '</head><body>Guide</body></html>', encoding="utf-8")
         (root / "robots.txt").write_text(
             "User-agent: *\nAllow: /\nSitemap: https://example.test/sitemap.xml\n",
             encoding="utf-8")
@@ -26,7 +38,15 @@ class ValidateSiteTests(unittest.TestCase):
             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
             '<url><loc>https://example.test/</loc></url>'
             '<url><loc>https://example.test/en/</loc></url>'
+            '<url><loc>https://example.test/guides/test/</loc></url>'
+            '<url><loc>https://example.test/en/guides/test/</loc></url>'
             '</urlset>', encoding="utf-8")
+        (root / "feed-zh.xml").write_text(
+            '<rss><channel><language>zh-cn</language><item><title>Guide ZH</title>'
+            '<link>https://example.test/guides/test/</link></item></channel></rss>', encoding="utf-8")
+        (root / "feed-en.xml").write_text(
+            '<rss><channel><language>en</language><item><title>Guide EN</title>'
+            '<link>https://example.test/en/guides/test/</link></item></channel></rss>', encoding="utf-8")
 
     def test_valid_site_has_no_errors(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -57,6 +77,16 @@ class ValidateSiteTests(unittest.TestCase):
                 '</head></html>', encoding="utf-8")
             errors = validate_site(root)
             self.assertTrue(any("canonical mismatch" in error for error in errors))
+
+    def test_language_feed_rejects_cross_language_url(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_site(root)
+            (root / "feed-zh.xml").write_text(
+                '<rss><channel><language>zh-cn</language><item><title>Wrong</title>'
+                '<link>https://example.test/en/guides/test/</link></item></channel></rss>', encoding="utf-8")
+            errors = validate_site(root)
+            self.assertTrue(any("wrong language in feed-zh.xml" in error for error in errors))
 
 
 if __name__ == "__main__":

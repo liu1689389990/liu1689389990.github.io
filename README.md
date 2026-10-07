@@ -4,7 +4,7 @@ Crypto daily editorial site. Auto-generated from Telegram channels @CryptoWeb3Ne
 
 ## Unattended SEO editorial pipeline
 
-See [`AUTOPILOT.md`](AUTOPILOT.md) for scope and publishing gates. The weekly editorial automation uses `content/editorial-backlog.json`; only independently written, sourced Chinese/English evergreen guides may pass through the site publishing workflow. RSS digests remain distinct from original guides.
+See [`AUTOPILOT.md`](AUTOPILOT.md) for scope and publishing gates. The weekly editorial automation uses `content/editorial-backlog.json`; only independently written, sourced Chinese/English evergreen guides may pass through the site publishing workflow. RSS news digests remain distinct from original guides. Guide distribution uses separate `feed-zh.xml` and `feed-en.xml` files consumed by the authorized Telegram worker; language routing and delivery outcomes are verified separately.
 
 Run the static-site checks before publishing:
 

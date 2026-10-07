@@ -59,6 +59,54 @@ def _local_file(root: Path, url: str) -> Path | None:
     return candidate
 
 
+def _validate_language_feeds(root: Path, sitemap_urls: set[str]) -> list[str]:
+    errors: list[str] = []
+    base = urlsplit(next(iter(sitemap_urls)))
+    for language, filename, expected_language in (
+        ("zh", "feed-zh.xml", "zh-cn"),
+        ("en", "feed-en.xml", "en"),
+    ):
+        path = root / filename
+        if not path.is_file():
+            errors.append(f"missing {filename}")
+            continue
+        try:
+            channel = ET.parse(path).getroot().find("./channel")
+        except (ET.ParseError, OSError, DefusedXmlException) as exc:
+            errors.append(f"invalid {filename}: {exc}")
+            continue
+        if channel is None:
+            errors.append(f"missing channel in {filename}")
+            continue
+        feed_language = (channel.findtext("language") or "").strip().lower()
+        if feed_language != expected_language:
+            errors.append(f"wrong language declaration in {filename}: {feed_language}")
+        items = channel.findall("./item")
+        if not items:
+            errors.append(f"no items in {filename}")
+        seen: set[str] = set()
+        for item in items:
+            title = (item.findtext("title") or "").strip()
+            link = (item.findtext("link") or "").strip()
+            if not title or not link:
+                errors.append(f"missing title or link in {filename}")
+                continue
+            parsed = urlsplit(link)
+            parts = parsed.path.strip("/").split("/")
+            is_guide = (
+                len(parts) == 2 and parts[0] == "guides" if language == "zh"
+                else len(parts) == 3 and parts[0] == "en" and parts[1] == "guides"
+            )
+            if (parsed.scheme, parsed.netloc) != (base.scheme, base.netloc) or not is_guide:
+                errors.append(f"wrong language in {filename}: {link}")
+            if link not in sitemap_urls:
+                errors.append(f"feed URL not in sitemap in {filename}: {link}")
+            if link in seen:
+                errors.append(f"duplicate feed URL in {filename}: {link}")
+            seen.add(link)
+    return errors
+
+
 def validate_site(root: Path) -> list[str]:
     """Return deterministic build-blocking validation errors for a static site."""
     root = Path(root)
@@ -117,6 +165,7 @@ def validate_site(root: Path) -> list[str]:
             elif href not in url_set:
                 errors.append(f"hreflang target not in sitemap: {url} -> {href}")
 
+    errors.extend(_validate_language_feeds(root, url_set))
     return errors
 
 

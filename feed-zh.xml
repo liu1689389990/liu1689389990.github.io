@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>加密货币实用指南（中文）</title>
+    <link>https://liu1689389990.github.io/</link>
+    <description>独立撰写、来源核实的中文加密资产使用与安全指南。</description>
+    <language>zh-cn</language>
+    <atom:link href="https://liu1689389990.github.io/feed-zh.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>发送比特币前如何核对地址：网络、剪贴板与地址混淆风险</title>
+      <link>https://liu1689389990.github.io/guides/verify-bitcoin-address-before-sending/</link>
+      <guid isPermaLink="true">https://liu1689389990.github.io/guides/verify-bitcoin-address-before-sending/</guid>
+      <pubDate>Wed, 07 Oct 2026 08:18:38 GMT</pubDate>
+      <description>发送 BTC 前逐步核对 Bitcoin 网络、收款地址和钱包确认画面；了解剪贴板篡改、相似地址与二维码风险。</description>
+    </item>
+    <item>
+      <title>比特币转账多久到账？确认数、手续费与到账时间说明</title>
+      <link>https://liu1689389990.github.io/guides/bitcoin-transfer-confirmation/</link>
+      <guid isPermaLink="true">https://liu1689389990.github.io/guides/bitcoin-transfer-confirmation/</guid>
+      <pubDate>Tue, 06 Oct 2026 00:00:00 GMT</pubDate>
+      <description>了解比特币转账确认、手续费和到账时间，以及如何安全核对交易状态。</description>
+    </item>
+  </channel>
+</rss>
