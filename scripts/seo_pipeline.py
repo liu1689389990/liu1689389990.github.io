@@ -1,0 +1,138 @@
+"""SEO site validation and unattended publishing gates."""
+from __future__ import annotations
+
+import argparse
+from html.parser import HTMLParser
+from pathlib import Path
+from urllib.parse import urlsplit
+from defusedxml import ElementTree as ET
+from defusedxml.common import DefusedXmlException
+
+SITEMAP_NS = "http://www.sitemaps.org/schemas/sitemap/0.9"
+XHTML_NS = "http://www.w3.org/1999/xhtml"
+
+
+class _MetadataParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.canonicals: list[str] = []
+        self.titles: list[str] = []
+        self.descriptions: list[str] = []
+        self._in_title = False
+        self._title_parts: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        values = dict(attrs)
+        if tag.lower() == "title":
+            self._in_title = True
+        elif tag.lower() == "link" and "canonical" in (values.get("rel") or "").lower().split():
+            self.canonicals.append(values.get("href") or "")
+        elif tag.lower() == "meta" and (values.get("name") or "").lower() == "description":
+            self.descriptions.append(values.get("content") or "")
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag.lower() == "title" and self._in_title:
+            self.titles.append(" ".join("".join(self._title_parts).split()))
+            self._title_parts.clear()
+            self._in_title = False
+
+    def handle_data(self, data: str) -> None:
+        if self._in_title:
+            self._title_parts.append(data)
+
+
+def _local_file(root: Path, url: str) -> Path | None:
+    parsed = urlsplit(url)
+    if parsed.scheme != "https" or not parsed.netloc or parsed.query or parsed.fragment:
+        return None
+    path = parsed.path
+    if path in ("", "/"):
+        candidate = root / "index.html"
+    elif path.endswith("/"):
+        candidate = root / path.lstrip("/") / "index.html"
+    else:
+        candidate = root / path.lstrip("/")
+    try:
+        candidate.resolve().relative_to(root.resolve())
+    except ValueError:
+        return None
+    return candidate
+
+
+def validate_site(root: Path) -> list[str]:
+    """Return deterministic build-blocking validation errors for a static site."""
+    root = Path(root)
+    errors: list[str] = []
+    sitemap_path = root / "sitemap.xml"
+    robots_path = root / "robots.txt"
+    if not sitemap_path.is_file():
+        return ["missing sitemap.xml"]
+    if not robots_path.is_file():
+        errors.append("missing robots.txt")
+
+    try:
+        tree = ET.parse(sitemap_path)
+    except (ET.ParseError, OSError, DefusedXmlException) as exc:
+        return errors + [f"invalid sitemap XML: {exc}"]
+
+    url_nodes = tree.findall(f".//{{{SITEMAP_NS}}}loc")
+    urls = [(node.text or "").strip() for node in url_nodes]
+    if not urls:
+        return errors + ["sitemap has no loc entries"]
+    if len(urls) != len(set(urls)):
+        errors.append("duplicate sitemap loc")
+    url_set = set(urls)
+    first = urlsplit(urls[0])
+    expected_sitemap = f"{first.scheme}://{first.netloc}/sitemap.xml" if first.netloc else ""
+    if robots_path.is_file() and expected_sitemap not in robots_path.read_text(encoding="utf-8", errors="replace"):
+        errors.append(f"robots.txt missing Sitemap directive for {expected_sitemap}")
+
+    for entry in tree.findall(f".//{{{SITEMAP_NS}}}url"):
+        loc_node = entry.find(f"{{{SITEMAP_NS}}}loc")
+        url = (loc_node.text or "").strip() if loc_node is not None else ""
+        page = _local_file(root, url)
+        if page is None:
+            errors.append(f"invalid sitemap URL: {url}")
+            continue
+        if not page.is_file():
+            errors.append(f"missing sitemap target: {url}")
+            continue
+        parser = _MetadataParser()
+        try:
+            parser.feed(page.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError) as exc:
+            errors.append(f"cannot read {url}: {exc}")
+            continue
+        if len(parser.canonicals) != 1 or parser.canonicals[0] != url:
+            errors.append(f"canonical mismatch: {url}")
+        if len(parser.titles) != 1 or not parser.titles[0]:
+            errors.append(f"missing or duplicate title: {url}")
+        if len(parser.descriptions) != 1 or not parser.descriptions[0].strip():
+            errors.append(f"missing or duplicate description: {url}")
+        for alt in entry.findall(f"{{{XHTML_NS}}}link"):
+            href = (alt.attrib.get("href") or "").strip()
+            hreflang = (alt.attrib.get("hreflang") or "").strip()
+            if not href or not hreflang:
+                errors.append(f"incomplete hreflang alternate: {url}")
+            elif href not in url_set:
+                errors.append(f"hreflang target not in sitemap: {url} -> {href}")
+
+    return errors
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Validate static-site SEO and publishing invariants")
+    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
+    args = parser.parse_args()
+    errors = validate_site(args.root)
+    if errors:
+        print(f"SEO validation failed: {len(errors)} issue(s)")
+        for error in errors:
+            print(f"- {error}")
+        return 1
+    print("SEO validation passed")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

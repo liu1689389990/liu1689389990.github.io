@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "weekly_limit": 1,
+  "topics": [
+    {
+      "id": "btc-transfer-confirmation",
+      "status": "published",
+      "zh_slug": "bitcoin-transfer-confirmation",
+      "en_slug": "bitcoin-transfer-confirmation",
+      "intent": "排查比特币交易未确认、确认数与接收平台入账的差异",
+      "source_domains": ["bitcoin.org", "developers.google.com"]
+    },
+    {
+      "id": "btc-verify-address",
+      "status": "queued",
+      "zh_slug": "verify-bitcoin-address-before-sending",
+      "en_slug": "verify-bitcoin-address-before-sending",
+      "intent": "发送前核对比特币地址与网络，识别剪贴板篡改和地址混淆风险",
+      "source_domains": ["bitcoin.org", "bitcoincore.org"]
+    },
+    {
+      "id": "eth-transaction-pending",
+      "status": "queued",
+      "zh_slug": "ethereum-transaction-pending-gas-fees",
+      "en_slug": "ethereum-transaction-pending-gas-fees",
+      "intent": "理解以太坊交易待处理、gas 费与区块确认；不提供投资建议",
+      "source_domains": ["ethereum.org", "ethereum.github.io"]
+    },
+    {
+      "id": "seed-phrase-safety",
+      "status": "queued",
+      "zh_slug": "wallet-recovery-phrase-safety",
+      "en_slug": "wallet-recovery-phrase-safety",
+      "intent": "解释钱包恢复短语的作用、备份风险与防假客服要点",
+      "source_domains": ["bitcoin.org", "ethereum.org"]
+    }
+  ]
+}
