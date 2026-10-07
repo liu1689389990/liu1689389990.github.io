@@ -88,6 +88,16 @@ class ValidateSiteTests(unittest.TestCase):
             errors = validate_site(root)
             self.assertTrue(any("wrong language in feed-zh.xml" in error for error in errors))
 
+    def test_language_feed_is_bounded_to_ten_items(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_site(root)
+            item = '<item><title>Guide</title><link>https://example.test/guides/test/</link></item>'
+            (root / "feed-zh.xml").write_text(
+                '<rss><channel><language>zh-cn</language>' + item * 11 + '</channel></rss>', encoding="utf-8")
+            errors = validate_site(root)
+            self.assertTrue(any("more than 10 items in feed-zh.xml" in error for error in errors))
+
 
 if __name__ == "__main__":
     unittest.main()

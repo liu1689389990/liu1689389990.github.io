@@ -84,6 +84,8 @@ def _validate_language_feeds(root: Path, sitemap_urls: set[str]) -> list[str]:
         items = channel.findall("./item")
         if not items:
             errors.append(f"no items in {filename}")
+        if len(items) > 10:
+            errors.append(f"more than 10 items in {filename}")
         seen: set[str] = set()
         for item in items:
             title = (item.findtext("title") or "").strip()
