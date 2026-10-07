@@ -12,7 +12,7 @@
     },
     {
       "id": "btc-verify-address",
-      "status": "draft",
+      "status": "published",
       "zh_slug": "verify-bitcoin-address-before-sending",
       "en_slug": "verify-bitcoin-address-before-sending",
       "intent": "发送前核对比特币地址与网络，识别剪贴板篡改和地址混淆风险",
